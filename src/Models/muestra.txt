@@ -1,0 +1,280 @@
+<?php
+namespace Anonymous01j\Encuesta\Controllers;
+
+use Anonymous01j\Encuesta\Models\Encuesta;
+use Anonymous01j\Encuesta\Models\Pregunta;
+use Anonymous01j\Encuesta\Models\OpcionRespuesta;
+use Anonymous01j\Encuesta\Models\Respuesta;
+use Anonymous01j\Encuesta\Models\Usuario;
+
+class CEncuesta {
+    public function index() {
+        $encuesta = new Encuesta();
+        $encuestas = $encuesta->search();
+        require_once __DIR__ . "/../View/encuestas/index.php";
+    }
+
+    public function insert() {
+        $nombre = $_POST['nombre'];
+        $tipo = $_POST['tipo'];
+        $descripcion = $_POST['descripcion'];
+        
+        $encuesta = new Encuesta();
+        $encuesta->setNombre($nombre);
+        $encuesta->setTipo($tipo);
+        $encuesta->setDescripcion($descripcion);
+        $encuesta->insert();
+        
+        header("Location: index.php?c=CEncuesta&a=index");
+    }
+
+    public function update() {
+        $id = $_POST['id'];
+        $nombre = $_POST['nombre'];
+        $tipo = $_POST['tipo'];
+        $descripcion = $_POST['descripcion'];
+        
+        $encuesta = new Encuesta();
+        $encuesta->setId($id);
+        $encuesta->setNombre($nombre);
+        $encuesta->setTipo($tipo);
+        $encuesta->setDescripcion($descripcion);
+        $encuesta->update($id, $nombre, $tipo, $descripcion);
+        
+        header("Location: index.php?c=CEncuesta&a=index");
+    }
+
+    public function delete() {
+        $id = $_POST['id'];
+        $encuesta = new Encuesta();
+        $encuesta->delete($id);
+        header("Location: index.php?c=CEncuesta&a=index");
+    }
+}
+
+class CPregunta {
+    public function index() {
+        $pregunta = new Pregunta();
+        $preguntas = $pregunta->search();
+        require_once __DIR__ . "/../View/preguntas/index.php";
+    }
+
+    public function insert() {
+        $id_encuesta = $_POST['id_encuesta'];
+        $texto = $_POST['texto'];
+        $tipo_respuesta = $_POST['tipo_respuesta'];
+        $orden = $_POST['orden'];
+        
+        $pregunta = new Pregunta();
+        $pregunta->setId_encuesta($id_encuesta);
+        $pregunta->setTexto($texto);
+        $pregunta->setTipoRespuesta($tipo_respuesta);
+        $pregunta->setOrden($orden);
+        $pregunta->insert();
+        
+        header("Location: index.php?c=CPregunta&a=index");
+    }
+
+    public function update() {
+        $id = $_POST['id'];
+        $id_encuesta = $_POST['id_encuesta'];
+        $texto = $_POST['texto'];
+        $tipo_respuesta = $_POST['tipo_respuesta'];
+        $orden = $_POST['orden'];
+        
+        $pregunta = new Pregunta();
+        $pregunta->setId($id);
+        $pregunta->setId_encuesta($id_encuesta);
+        $pregunta->setTexto($texto);
+        $pregunta->setTipoRespuesta($tipo_respuesta);
+        $pregunta->setOrden($orden);
+        $pregunta->update($id, $id_encuesta, $texto, $tipo_respuesta, $orden);
+        
+        header("Location: index.php?c=CPregunta&a=index");
+    }
+
+    public function delete() {
+        $id = $_POST['id'];
+        // Lógica de eliminación según modelo
+        header("Location: index.php?c=CPregunta&a=index");
+    }
+}
+
+class COpcionRespuesta {
+    public function index() {
+        $opcion = new OpcionRespuesta();
+        $opciones = $opcion->search();
+        require_once __DIR__ . "/../View/opciones/index.php";
+    }
+
+    public function insert() {
+        $id_pregunta = $_POST['id_pregunta'];
+        $valor = $_POST['valor'];
+        $peso = $_POST['peso'];
+        
+        $opcion = new OpcionRespuesta();
+        $opcion->setIdPregunta($id_pregunta);
+        $opcion->setValor($valor);
+        $opcion->setPeso($peso);
+        $opcion->insert();
+        
+        header("Location: index.php?c=COpcionRespuesta&a=index");
+    }
+
+    public function update() {
+        $id = $_POST['id'];
+        $id_pregunta = $_POST['id_pregunta'];
+        $valor = $_POST['valor'];
+        $peso = $_POST['peso'];
+        
+        $opcion = new OpcionRespuesta();
+        $opcion->setId($id);
+        $opcion->setIdPregunta($id_pregunta);
+        $opcion->setValor($valor);
+        $opcion->setPeso($peso);
+        $opcion->update($id, $id_pregunta, $valor, $peso);
+        
+        header("Location: index.php?c=COpcionRespuesta&a=index");
+    }
+
+    public function delete() {
+        $id = $_POST['id'];
+        // Lógica de eliminación según modelo
+        header("Location: index.php?c=COpcionRespuesta&a=index");
+    }
+}
+
+class CRespuesta {
+    public function index() {
+        $respuesta = new Respuesta();
+        $respuestas = $respuesta->search();
+        require_once __DIR__ . "/../View/respuestas/index.php";
+    }
+
+    public function insert() {
+        $id_usuario = $_POST['id_usuario'];
+        $id_pregunta = $_POST['id_pregunta'];
+        $id_opcion = $_POST['id_opcion'] ?? null;
+        $valor_texto = $_POST['valor_texto'] ?? null;
+        
+        $respuesta = new Respuesta();
+        $respuesta->setIdUsuario($id_usuario);
+        $respuesta->setIdPregunta($id_pregunta);
+        $respuesta->setIdOpcion($id_opcion);
+        $respuesta->setValorTexto($valor_texto);
+        $respuesta->insert();
+        
+        header("Location: index.php?c=CRespuesta&a=index");
+    }
+
+    public function update() {
+        $id = $_POST['id'];
+        $id_usuario = $_POST['id_usuario'];
+        $id_pregunta = $_POST['id_pregunta'];
+        $id_opcion = $_POST['id_opcion'] ?? null;
+        $valor_texto = $_POST['valor_texto'] ?? null;
+        
+        $respuesta = new Respuesta();
+        $respuesta->setId($id);
+        $respuesta->setIdUsuario($id_usuario);
+        $respuesta->setIdPregunta($id_pregunta);
+        $respuesta->setIdOpcion($id_opcion);
+        $respuesta->setValorTexto($valor_texto);
+        $respuesta->update($id, $id_usuario, $id_pregunta, $id_opcion, $valor_texto);
+        
+        header("Location: index.php?c=CRespuesta&a=index");
+    }
+
+    public function delete() {
+        $id = $_POST['id'];
+        // Lógica de eliminación según modelo
+        header("Location: index.php?c=CRespuesta&a=index");
+    }
+}
+
+class CUsuario {
+    public function index() {
+        $usuario = new Usuario();
+        $usuarios = $usuario->search();
+        require_once __DIR__ . "/../View/usuarios/index.php";
+    }
+
+    public function insert() {
+        $nombre = $_POST['nombre'];
+        $cargo = $_POST['cargo'];
+        $correo = $_POST['correo'];
+        
+        $usuario = new Usuario();
+        $usuario->crear($nombre, $cargo, $correo);
+        
+        header("Location: index.php?c=CUsuario&a=index");
+    }
+
+    public function update() {
+        $id = $_POST['id'];
+        $nombre = $_POST['nombre'];
+        $cargo = $_POST['cargo'];
+        $correo = $_POST['correo'];
+        
+        $usuario = new Usuario();
+        $usuario->update($id, $nombre, $cargo, $correo);
+        
+        header("Location: index.php?c=CUsuario&a=index");
+    }
+
+    public function delete() {
+        $id = $_POST['id'];
+        // Lógica de eliminación según modelo
+        header("Location: index.php?c=CUsuario&a=index");
+    }
+}
+
+class CEncuestaPublica {
+    public function verEncuestas() {
+        $encuesta = new Encuesta();
+        $encuestas = $encuesta->search();
+        require_once __DIR__ . "/../View/publico/encuestas.php";
+    }
+
+    public function responderEncuesta($encuestaId) {
+        $encuesta = new Encuesta();
+        $pregunta = new Pregunta();
+        $opcion = new OpcionRespuesta();
+        
+        // Obtener datos de la encuesta
+        $encuestaData = $encuesta->buscarPorId($encuestaId);
+        $preguntas = $pregunta->buscarPorEncuesta($encuestaId);
+        
+        // Obtener opciones para cada pregunta
+        foreach ($preguntas as &$p) {
+            $p['opciones'] = $opcion->buscarPorPregunta($p['id']);
+        }
+        
+        require_once __DIR__ . "/../View/publico/responder.php";
+    }
+
+    public function guardarRespuesta() {
+        $usuarioId = $_SESSION['usuario_id'] ?? null;
+        $respuestas = $_POST['respuestas'];
+        
+        $respuestaModel = new Respuesta();
+        
+        foreach ($respuestas as $preguntaId => $respuestaData) {
+            $idOpcion = $respuestaData['opcion_id'] ?? null;
+            $valorTexto = $respuestaData['texto'] ?? null;
+            
+            $respuesta = new Respuesta();
+            $respuesta->setIdUsuario($usuarioId);
+            $respuesta->setIdPregunta($preguntaId);
+            $respuesta->setIdOpcion($idOpcion);
+            $respuesta->setValorTexto($valorTexto);
+            $respuesta->insert();
+        }
+        
+        header("Location: index.php?c=CEncuestaPublica&a=gracias");
+    }
+
+    public function gracias() {
+        require_once __DIR__ . "/../View/publico/gracias.php";
+    }
+}
